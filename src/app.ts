@@ -13,7 +13,7 @@ import {YoutubeDl} from "./YoutubeDl";
 dotenv.config();
 
 // Write COOKIE_SECRET to /tools/bin/cookies.txt
-const cookiesTxtPath = path.join(__dirname, '../tools/bin/cookies.txt');
+const cookiesTxtPath = path.join(__dirname, '../cookies.txt');
 const cookieSecret = process.env.COOKIE_SECRET;
 if (cookieSecret) {
     fs.mkdirSync(path.dirname(cookiesTxtPath), { recursive: true });
