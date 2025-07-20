@@ -26,6 +26,13 @@ async function download(url, dest) {
 
 fs.mkdirSync(destFolder, {recursive: true});
 
+// Save COOKIE_SECRET to cookies.txt in root and /app/tools/bin
+const cookieSecret = process.env.COOKIE_SECRET;
+if (cookieSecret) {
+    fs.writeFileSync('./cookies.txt', cookieSecret);
+    fs.writeFileSync(destFolder + '/cookies.txt', cookieSecret);
+}
+
 (async () => {
     try {
         for (let i=0; i<tools.length; i++){
