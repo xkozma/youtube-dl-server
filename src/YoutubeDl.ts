@@ -18,7 +18,7 @@ export class YoutubeDl {
         if (url.startsWith("-") && !url.startsWith("-- ")) {
             url = "-- " + url;
         }
-        const command = `${bin} ${options.cliOptions} --dump-single-json --no-warnings ${url}`;
+        const command = `${bin} ${options.cliOptions} --dump-single-json --no-warnings --cookies cookies.txt ${url}`;
         return await new Promise<any>((resolve, reject) => {
             exec(command, (error: ExecException | null, stdout: string, stderr: string) => {
                 if (error) {

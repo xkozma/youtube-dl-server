@@ -3,8 +3,22 @@
 import express from 'express';
 const cors = require('cors');
 const compression = require('compression')
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
 
 import {YoutubeDl} from "./YoutubeDl";
+
+// Load .env
+dotenv.config();
+
+// Write COOKIE_SECRET to /tools/bin/cookies.txt
+const cookiesTxtPath = path.join(__dirname, '../tools/bin/cookies.txt');
+const cookieSecret = process.env.COOKIE_SECRET;
+if (cookieSecret) {
+    fs.mkdirSync(path.dirname(cookiesTxtPath), { recursive: true });
+    fs.writeFileSync(cookiesTxtPath, cookieSecret, { encoding: 'utf8' });
+}
 
 const app = express();
 const port = process.env.PORT || 8080;
