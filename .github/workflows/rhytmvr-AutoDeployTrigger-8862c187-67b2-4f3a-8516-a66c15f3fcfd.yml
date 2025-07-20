@@ -1,0 +1,49 @@
+name: Trigger auto deployment for rhytmvr
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ master ]
+    paths:
+    - '**'
+    - '.github/workflows/rhytmvr-AutoDeployTrigger-8862c187-67b2-4f3a-8516-a66c15f3fcfd.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.RHYTMVR_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.RHYTMVR_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.RHYTMVR_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: rhytmvr.azurecr.io
+          registryUsername: ${{ secrets.RHYTMVR_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.RHYTMVR_REGISTRY_PASSWORD }}
+          containerAppName: rhytmvr
+          resourceGroup: RhytmVR
+          imageToBuild: rhytmvr.azurecr.io/rhytmvr:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
